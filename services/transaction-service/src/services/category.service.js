@@ -66,22 +66,47 @@ class CategoryService {
      * Create new category
      */
     async createCategory(userId, data) {
-        // Check if category with same name and type exists
+        const categoryName = data.name.trim();
+
+        // Check if category with same name and type exists (including soft-deleted)
+        // Using case-insensitive comparison with LOWER()
         const existing = await Category.findOne({
             where: {
                 user_id: userId,
-                name: data.name,
                 type: data.type
-            }
+            },
+            // Include soft-deleted records
+            paranoid: false
         });
 
-        if (existing) {
-            throw { status: 409, message: 'Category with this name already exists' };
+        // Find with case-insensitive manual check
+        const allCategories = await Category.findAll({
+            where: {
+                user_id: userId,
+                type: data.type
+            },
+            paranoid: false // Include soft-deleted
+        });
+
+        const matchingCategory = allCategories.find(
+            cat => cat.name.toLowerCase() === categoryName.toLowerCase()
+        );
+
+        if (matchingCategory) {
+            // If category exists and is NOT soft-deleted, reject
+            if (matchingCategory.deleted_at === null) {
+                throw { status: 409, message: 'Category with this name already exists' };
+            }
+
+            // If category exists and IS soft-deleted, restore it
+            await matchingCategory.restore();
+            return matchingCategory;
         }
 
+        // Create new category
         return await Category.create({
             user_id: userId,
-            name: data.name,
+            name: categoryName,
             type: data.type,
             is_default: false
         });
@@ -92,25 +117,29 @@ class CategoryService {
      */
     async updateCategory(userId, categoryId, data) {
         const category = await this.getCategoryById(userId, categoryId);
+        const newName = data.name ? data.name.trim() : null;
 
-        // Check for duplicate name if name is being changed
-        if (data.name && data.name !== category.name) {
-            const existing = await Category.findOne({
+        // Check for duplicate name if name is being changed (case-insensitive)
+        if (newName && newName.toLowerCase() !== category.name.toLowerCase()) {
+            const allCategories = await Category.findAll({
                 where: {
                     user_id: userId,
-                    name: data.name,
                     type: category.type,
                     id: { [Op.ne]: categoryId }
                 }
             });
 
-            if (existing) {
+            const duplicate = allCategories.find(
+                cat => cat.name.toLowerCase() === newName.toLowerCase()
+            );
+
+            if (duplicate) {
                 throw { status: 409, message: 'Category with this name already exists' };
             }
         }
 
         await category.update({
-            name: data.name || category.name
+            name: newName || category.name
         });
 
         return category;
