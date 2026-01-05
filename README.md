@@ -25,34 +25,28 @@ Pastikan Anda sudah menginstall:
 
 1. **Clone Repository (atau download ZIP)**
 
-2. **Setup Environment Variables**
+3. **Setup Environment Variables (PENTING)**
+
+   **a. Konfigurasi Root Project (WAJIB)**
+   Aplikasi ini menggunakan **Strict Environment Mode**, artinya Anda wajib memiliki file `.env` di root folder.
    
-   **a. Konfigurasi Root Environment (Wajib):**
-   
-   Salin file `.env-example` menjadi `.env` di folder utama project, lalu sesuaikan nilainya:
+   Salin file `.env-example` menjadi `.env` di folder utama:
    
    **Windows (Command Prompt):**
    ```cmd
    copy .env-example .env
    ```
-   
-   **Mac/Linux/Git Bash:**
+   **Mac/Linux:**
    ```bash
    cp .env-example .env
    ```
    
-   > ⚠️ **Penting:** Edit file `.env` dan ganti nilai default dengan kredensial yang aman untuk production!
+   > ⚠️ **Edit file `.env` sekarang!** Pastikan variabel `NEXT_PUBLIC_API_URL` dan `CORS_ORIGIN` sesuai dengan URL aplikasi Anda (default: `http://localhost`).
 
-   **b. Konfigurasi Services (Opsional untuk development lokal):**
+   **b. Konfigurasi Tiap Service (OPSIONAL)**
+   File `.env` di dalam folder `services/*` dan `frontend/` **TIDAK PERLU** jika Anda menggunakan Docker Compose (karena sudah di-inject otomatis).
    
-   ```cmd
-   copy services\auth-service\.env.example services\auth-service\.env
-   copy services\transaction-service\.env.example services\transaction-service\.env
-   copy services\reports-service\.env.example services\reports-service\.env
-   copy frontend\.env.example frontend\.env
-   ```
-   
-   > Catatan: File `.env` di masing-masing service hanya dibutuhkan jika menjalankan service secara individual (tanpa Docker).
+   Hanya buat file env di service jika Anda berencana menjalankannya secara manual (tanpa Docker).
 
 3. **Jalankan Aplikasi**
    Buka terminal di folder utama project, lalu jalankan:

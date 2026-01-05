@@ -160,15 +160,17 @@ export default function TransactionsPage() {
                         <CardTitle>History</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <TransactionList
-                            transactions={transactions}
-                            isLoading={isLoading}
-                            onEdit={(t) => {
-                                setSelectedTransaction(t)
-                                setIsModalOpen(true)
-                            }}
-                            onDelete={handleDeleteClick}
-                        />
+                        <div className="max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
+                            <TransactionList
+                                transactions={transactions}
+                                isLoading={isLoading}
+                                onEdit={(t) => {
+                                    setSelectedTransaction(t)
+                                    setIsModalOpen(true)
+                                }}
+                                onDelete={handleDeleteClick}
+                            />
+                        </div>
                     </CardContent>
                 </Card>
 

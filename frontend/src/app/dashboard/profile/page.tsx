@@ -43,6 +43,9 @@ export default function ProfilePage() {
     const [isDeleting, setIsDeleting] = useState(false)
     const [deletePassword, setDeletePassword] = useState("")
 
+    // Logout State
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
+
     const fetchProfile = useCallback(async () => {
         try {
             const response = await api.get('/users/profile')
@@ -330,7 +333,7 @@ export default function ProfilePage() {
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-3">
                     <Button
-                        onClick={handleLogout}
+                        onClick={() => setShowLogoutConfirm(true)}
                         variant="outline"
                         className="border-gray-600 text-gray-300 hover:bg-gray-700"
                     >
@@ -347,6 +350,18 @@ export default function ProfilePage() {
                     </Button>
                 </CardContent>
             </Card>
+
+            {/* Logout Confirmation Dialog */}
+            <ConfirmDialog
+                isOpen={showLogoutConfirm}
+                onClose={() => setShowLogoutConfirm(false)}
+                onConfirm={handleLogout}
+                title="Logout"
+                message="Are you sure you want to logout? You will need to login again to access your account."
+                confirmText="Yes, Logout"
+                cancelText="Cancel"
+                variant="logout"
+            />
 
             {/* Delete Account Modal */}
             {showDeleteConfirm && (

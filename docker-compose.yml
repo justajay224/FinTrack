@@ -10,9 +10,9 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: auth_service_db
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "3307:3306"
+      - "${MYSQL_PORT}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -28,11 +28,11 @@ services:
     container_name: fintrack-mariadb
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_DATABASE: catat_pengeluaran
+      MYSQL_DATABASE: ${MARIADB_DATABASE}
     ports:
-      - "3308:3306"
+      - "${MARIADB_PORT}:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
@@ -48,7 +48,7 @@ services:
     container_name: fintrack-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -70,20 +70,22 @@ services:
     restart: unless-stopped
     command: sh -c "npx sequelize-cli db:migrate && node src/app.js"
     ports:
-      - "4001:4001"
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
     environment:
-      PORT: 4001
+      PORT: ${AUTH_SERVICE_PORT}
       NODE_ENV: production
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_NAME: auth_service_db
-      DB_USER: root
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      REDIS_URL: redis://fintrack-redis:6379
+      REDIS_URL: redis://fintrack-redis:${REDIS_PORT}
       JWT_SECRET: ${JWT_SECRET}
-      JWT_ACCESS_EXPIRES: 15m
-      JWT_REFRESH_EXPIRES: 7d
-      CORS_ORIGIN: http://localhost:3000
+      JWT_ACCESS_EXPIRES: ${JWT_ACCESS_EXPIRES}
+      JWT_REFRESH_EXPIRES: ${JWT_REFRESH_EXPIRES}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX}
+      CORS_ORIGIN: ${CORS_ORIGIN}
     depends_on:
       mysql:
         condition: service_healthy
@@ -92,7 +94,7 @@ services:
     networks:
       - fintrack-network
     healthcheck:
-      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4001/health" ]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${AUTH_SERVICE_PORT}/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -106,24 +108,26 @@ services:
     restart: unless-stopped
     command: sh -c "npx sequelize-cli db:migrate && node src/app.js"
     ports:
-      - "4002:4002"
+      - "${TRANSACTION_SERVICE_PORT}:${TRANSACTION_SERVICE_PORT}"
     environment:
-      PORT: 4002
+      PORT: ${TRANSACTION_SERVICE_PORT}
       NODE_ENV: production
       DB_HOST: mariadb
       DB_PORT: 3306
-      DB_NAME: catat_pengeluaran
-      DB_USER: root
-      DB_PASSWORD: ""
+      DB_NAME: ${MARIADB_DATABASE}
+      DB_USER: ${MARIADB_USER}
+      DB_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
-      CORS_ORIGIN: http://localhost:3000
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX}
+      CORS_ORIGIN: ${CORS_ORIGIN}
     depends_on:
       mariadb:
         condition: service_healthy
     networks:
       - fintrack-network
     healthcheck:
-      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4002/health" ]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${TRANSACTION_SERVICE_PORT}/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -136,24 +140,26 @@ services:
     container_name: fintrack-reports
     restart: unless-stopped
     ports:
-      - "4003:4003"
+      - "${REPORTS_SERVICE_PORT}:${REPORTS_SERVICE_PORT}"
     environment:
-      PORT: 4003
+      PORT: ${REPORTS_SERVICE_PORT}
       NODE_ENV: production
       DB_HOST: mariadb
       DB_PORT: 3306
-      DB_NAME: catat_pengeluaran
-      DB_USER: root
-      DB_PASSWORD: ""
+      DB_NAME: ${MARIADB_DATABASE}
+      DB_USER: ${MARIADB_USER}
+      DB_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
-      CORS_ORIGIN: http://localhost:3000
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX}
+      CORS_ORIGIN: ${CORS_ORIGIN}
     depends_on:
       mariadb:
         condition: service_healthy
     networks:
       - fintrack-network
     healthcheck:
-      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4003/health" ]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${REPORTS_SERVICE_PORT}/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -166,10 +172,12 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
     container_name: fintrack-frontend
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT}:3000"
     environment:
       NODE_ENV: production
     depends_on:
@@ -196,7 +204,7 @@ services:
     container_name: fintrack-nginx
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "${NGINX_PORT}:80"
     volumes:
       - ./nginx/nginx-docker.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
