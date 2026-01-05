@@ -57,7 +57,7 @@ export default function LandingPage() {
                     <div className="flex items-center justify-center gap-4">
                         <Link href="/register">
                             <Button size="lg" className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:opacity-90 h-12 px-8 text-base">
-                                Mulai Saja
+                                Mulai
                                 <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
                         </Link>
