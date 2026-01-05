@@ -468,19 +468,28 @@ class ReportService {
   }
 
   /**
-   * Get overall summary
+   * Get overall summary (filtered by current month)
    */
   async getSummary(userId) {
+    // Get current month start and end dates
+    const now = new Date();
+    const startOfMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const endOfMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${lastDay}`;
+
     const result = await sequelize.query(`
       SELECT 
         type,
         SUM(amount) as total,
         COUNT(*) as count
       FROM transactions
-      WHERE user_id = :userId AND deleted_at IS NULL
+      WHERE user_id = :userId 
+        AND deleted_at IS NULL
+        AND transaction_date >= :startDate
+        AND transaction_date <= :endDate
       GROUP BY type
     `, {
-      replacements: { userId },
+      replacements: { userId, startDate: startOfMonth, endDate: endOfMonth },
       type: QueryTypes.SELECT
     });
 

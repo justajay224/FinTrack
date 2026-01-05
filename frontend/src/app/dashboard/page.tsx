@@ -192,7 +192,7 @@ export default function DashboardPage() {
                         <div className="text-2xl font-bold text-white">
                             {globalSummary ? formatCurrency(globalSummary.balance) : "Rp 0"}
                         </div>
-                        <p className="text-xs text-violet-300/60 mt-1">Net Worth</p>
+                        <p className="text-xs text-violet-300/60 mt-1">This Month</p>
                     </CardContent>
                 </Card>
 
