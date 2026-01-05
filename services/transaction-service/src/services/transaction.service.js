@@ -90,7 +90,13 @@ class TransactionService {
     async createTransaction(userId, data) {
         // Verify category exists and belongs to user
         const category = await Category.findOne({
-            where: { id: data.category_id, user_id: userId }
+            where: {
+                id: data.category_id,
+                [Op.or]: [
+                    { user_id: userId },
+                    { user_id: 0 }
+                ]
+            }
         });
 
         if (!category) {
@@ -129,7 +135,13 @@ class TransactionService {
         // If changing category, verify it exists
         if (data.category_id) {
             const category = await Category.findOne({
-                where: { id: data.category_id, user_id: userId }
+                where: {
+                    id: data.category_id,
+                    [Op.or]: [
+                        { user_id: userId },
+                        { user_id: 0 }
+                    ]
+                }
             });
 
             if (!category) {

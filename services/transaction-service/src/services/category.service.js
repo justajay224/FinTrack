@@ -36,7 +36,12 @@ class CategoryService {
      * Get all categories for a user
      */
     async getCategories(userId, type = null) {
-        const where = { user_id: userId };
+        const where = {
+            [Op.or]: [
+                { user_id: userId },
+                { user_id: 0 }
+            ]
+        };
         if (type) {
             where.type = type;
         }
