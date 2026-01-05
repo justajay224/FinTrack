@@ -2,7 +2,6 @@
 
 Sistem pencatatan keuangan modern berbasis Microservices yang mudah digunakan dan dideploy.
 
-![Dashboard Preview](frontend/public/preview.png)
 
 ## 📋 Fitur Utama
 - **Dashboard Interaktif**: Ringkasan keuangan real-time.
@@ -14,7 +13,7 @@ Sistem pencatatan keuangan modern berbasis Microservices yang mudah digunakan da
 
 ## 🚀 Cara Menjalankan (Quick Start)
 
-Ikuti langkah mudah ini untuk menjalankan aplikasi di komputer Anda.
+Ikuti langkah ini untuk menjalankan aplikasi di komputer Anda.
 
 ### Prasyarat
 Pastikan Anda sudah menginstall:
@@ -41,7 +40,7 @@ Pastikan Anda sudah menginstall:
    cp .env-example .env
    ```
    
-   > ⚠️ **Edit file `.env` sekarang!** Pastikan variabel `NEXT_PUBLIC_API_URL` dan `CORS_ORIGIN` sesuai dengan URL aplikasi Anda (default: `http://localhost`).
+   > ⚠️ **Buatkan koneksi database (MySQL dan MariaDB) & sesuaikan portnya**.
 
    **b. Konfigurasi Tiap Service (OPSIONAL)**
    File `.env` di dalam folder `services/*` dan `frontend/` **TIDAK PERLU** jika Anda menggunakan Docker Compose (karena sudah di-inject otomatis).
