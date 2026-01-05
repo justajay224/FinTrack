@@ -96,7 +96,7 @@ export default function LandingPage() {
 
             {/* Footer */}
             <footer className="relative z-10 border-t border-white/10 py-8 text-center text-gray-500 text-sm">
-                © 2025 FinTrack. All rights reserved.
+                © 2026 FinTrack. All rights reserved.
             </footer>
         </div>
     )
