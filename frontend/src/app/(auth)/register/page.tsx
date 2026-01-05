@@ -109,7 +109,7 @@ export default function RegisterPage() {
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
-                            <p className="text-xs text-gray-500">Minimal 8 karakter</p>
+                            <p className="text-xs text-gray-500">Min 8 karakter, huruf besar, huruf kecil, dan angka</p>
                         </div>
 
                         <Button

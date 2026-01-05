@@ -82,7 +82,9 @@ class UserService {
             throw { status: 400, message: 'Password is incorrect' };
         }
 
-        // Soft delete (paranoid mode)
+        // Set is_active to false and soft delete
+        user.is_active = false;
+        await user.save();
         await user.destroy();
 
         return true;

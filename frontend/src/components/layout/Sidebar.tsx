@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { LayoutDashboard, Receipt, BarChart3, LogOut, Wallet, Menu, X } from "lucide-react"
+import { LayoutDashboard, Receipt, BarChart3, LogOut, Wallet, Menu, X, Tag, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import toast from "react-hot-toast"
@@ -20,9 +20,19 @@ const sidebarItems = [
         icon: Receipt,
     },
     {
+        title: "Categories",
+        href: "/dashboard/categories",
+        icon: Tag,
+    },
+    {
         title: "Reports",
         href: "/dashboard/reports",
         icon: BarChart3,
+    },
+    {
+        title: "Profile",
+        href: "/dashboard/profile",
+        icon: User,
     },
 ]
 
