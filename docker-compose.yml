@@ -9,7 +9,7 @@ services:
     container_name: fintrack-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: Masaka224@
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: auth_service_db
     ports:
       - "3307:3306"
@@ -18,7 +18,7 @@ services:
     networks:
       - fintrack-network
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pMasaka224@" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -78,9 +78,9 @@ services:
       DB_PORT: 3306
       DB_NAME: auth_service_db
       DB_USER: root
-      DB_PASSWORD: Masaka224@
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       REDIS_URL: redis://fintrack-redis:6379
-      JWT_SECRET: super-secret-jwt-key-for-financial-tracking-app-2024
+      JWT_SECRET: ${JWT_SECRET}
       JWT_ACCESS_EXPIRES: 15m
       JWT_REFRESH_EXPIRES: 7d
       CORS_ORIGIN: http://localhost:3000
@@ -115,7 +115,7 @@ services:
       DB_NAME: catat_pengeluaran
       DB_USER: root
       DB_PASSWORD: ""
-      JWT_SECRET: super-secret-jwt-key-for-financial-tracking-app-2024
+      JWT_SECRET: ${JWT_SECRET}
       CORS_ORIGIN: http://localhost:3000
     depends_on:
       mariadb:
@@ -145,7 +145,7 @@ services:
       DB_NAME: catat_pengeluaran
       DB_USER: root
       DB_PASSWORD: ""
-      JWT_SECRET: super-secret-jwt-key-for-financial-tracking-app-2024
+      JWT_SECRET: ${JWT_SECRET}
       CORS_ORIGIN: http://localhost:3000
     depends_on:
       mariadb:

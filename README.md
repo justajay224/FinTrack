@@ -26,25 +26,33 @@ Pastikan Anda sudah menginstall:
 1. **Clone Repository (atau download ZIP)**
 
 2. **Setup Environment Variables**
-   Salin file `.env.example` menjadi `.env` di **SETIAP** folder service. Anda tidak perlu mengedit isinya jika menjalankannya secara lokal (default sudah terkonfigurasi untuk Docker).
-
+   
+   **a. Konfigurasi Root Environment (Wajib):**
+   
+   Salin file `.env-example` menjadi `.env` di folder utama project, lalu sesuaikan nilainya:
+   
    **Windows (Command Prompt):**
    ```cmd
-   copy .env.example .env
+   copy .env-example .env
+   ```
+   
+   **Mac/Linux/Git Bash:**
+   ```bash
+   cp .env-example .env
+   ```
+   
+   > ⚠️ **Penting:** Edit file `.env` dan ganti nilai default dengan kredensial yang aman untuk production!
+
+   **b. Konfigurasi Services (Opsional untuk development lokal):**
+   
+   ```cmd
    copy services\auth-service\.env.example services\auth-service\.env
    copy services\transaction-service\.env.example services\transaction-service\.env
    copy services\reports-service\.env.example services\reports-service\.env
    copy frontend\.env.example frontend\.env
    ```
-
-   **Mac/Linux/Git Bash:**
-   ```bash
-   cp .env.example .env
-   cp services/auth-service/.env.example services/auth-service/.env
-   cp services/transaction-service/.env.example services/transaction-service/.env
-   cp services/reports-service/.env.example services/reports-service/.env
-   cp frontend/.env.example frontend/.env
-   ```
+   
+   > Catatan: File `.env` di masing-masing service hanya dibutuhkan jika menjalankan service secara individual (tanpa Docker).
 
 3. **Jalankan Aplikasi**
    Buka terminal di folder utama project, lalu jalankan:
@@ -55,13 +63,13 @@ Pastikan Anda sudah menginstall:
    
    > **Catatan:** Migrasi database akan berjalan otomatis setiap kali aplikasi dimulai.
 
-5. **(Opsional) Isi Data Awal (Seeder)**
+4. **(Opsional) Isi Data Awal (Seeder)**
    Jika ingin mengisi kategori bawaan (Gaji, Makanan, dll), jalankan perintah ini **sekali saja** setelah aplikasi berjalan:
    ```bash
    docker exec -it fintrack-transaction npm run seed
    ```
 
-6. **Akses Aplikasi**
+5. **Akses Aplikasi**
    Setelah semua selesai, buka browser dan kunjungi:
    
    👉 **http://localhost**
